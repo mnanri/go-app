@@ -16,14 +16,23 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// ルートを設定
-	// ローカル環境の場合、http://localhost:8080/ にGETアクセスされるとhelloハンドラーを実行する
-	e.GET("/", hello)
-
-	// サーバーをポート番号1323で起動
+	// ローカル環境の場合、http://localhost:8080/ にGETアクセスされるとハンドラーを実行する
+	e.GET("/", helloHandler)
+	e.GET("/:path", urlHandler)
+	e.GET("/query", queryHandler)
+	// サーバーをポート番号8080で起動
 	e.Logger.Fatal(e.Start(":8080"))
 }
 
 // ハンドラーを定義
-func hello(c echo.Context) error {
+func helloHandler(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
+}
+
+func urlHandler(c echo.Context) error {
+	return c.String(http.StatusOK, c.Param("path"))
+}
+
+func queryHandler(c echo.Context) error {
+	return c.String(http.StatusOK, c.QueryParam("key"))
 }
